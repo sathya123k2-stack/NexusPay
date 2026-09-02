@@ -11,7 +11,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                dir('app/CustomerService') {
+                dir('CustomerService') {
                     sh 'dotnet restore'
                     sh 'dotnet build --configuration Release --no-restore'
                 }
@@ -26,7 +26,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                dir('app/CustomerService') {
+                dir('CustomerService') {
                     sh 'docker build -t nexuspay-customerservice:latest .'
                 }
             }
