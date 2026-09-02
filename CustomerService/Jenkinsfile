@@ -11,8 +11,8 @@ pipeline {
 
         stage('Build') {
             steps {
+                sh 'dotnet restore NexusPay.sln'
                 dir('CustomerService') {
-                    sh 'dotnet restore'
                     sh 'dotnet build --configuration Release --no-restore'
                 }
             }
