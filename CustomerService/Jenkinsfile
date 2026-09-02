@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('app/CustomerService') {
+                    sh 'dotnet restore'
+                    sh 'dotnet build --configuration Release --no-restore'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'No automated tests configured yet.'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('app/CustomerService') {
+                    sh 'docker build -t nexuspay-customerservice:latest .'
+                }
+            }
+        }
+    }
+}
