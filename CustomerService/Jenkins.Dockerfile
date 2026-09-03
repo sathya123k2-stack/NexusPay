@@ -23,4 +23,9 @@ RUN apt-get update && \
     apt-get install -y docker.io && \
     rm -rf /var/lib/apt/lists/*
 
+    # Install SonarScanner for .NET
+RUN dotnet tool install --tool-path /opt/sonarscanner dotnet-sonarscanner
+
+ENV PATH="/opt/sonarscanner:${PATH}"
+
 USER jenkins
