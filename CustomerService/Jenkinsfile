@@ -9,9 +9,23 @@ pipeline {
             }
         }
 
+        stage('SonarQube Begin') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        dotnet sonarscanner begin \
+                          /k:"NexusPay" \
+                          /d:sonar.host.url="$SONAR_HOST_URL" \
+                          /d:sonar.token="$SONAR_AUTH_TOKEN"
+                    '''
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'dotnet restore NexusPay.sln'
+
                 dir('CustomerService') {
                     sh 'dotnet build --configuration Release --no-restore'
                 }
@@ -21,6 +35,17 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'dotnet test --configuration Release --no-restore'
+            }
+        }
+
+        stage('SonarQube End') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        dotnet sonarscanner end \
+                          /d:sonar.token="$SONAR_AUTH_TOKEN"
+                    '''
+                }
             }
         }
 
