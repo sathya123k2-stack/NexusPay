@@ -39,15 +39,24 @@ pipeline {
         }
 
         stage('SonarQube End') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        dotnet sonarscanner end \
-                          /d:sonar.token="$SONAR_AUTH_TOKEN"
-                    '''
-                }
-            }
+    steps {
+        withSonarQubeEnv('SonarQube') {
+            sh '''
+                dotnet sonarscanner end \
+                  /d:sonar.token="$SONAR_AUTH_TOKEN"
+            '''
         }
+    }
+}
+
+stage('Quality Gate') {
+    steps {
+        timeout(time: 5, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
+
 
         stage('Docker Build') {
             steps {
