@@ -1,0 +1,86 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('SonarQube Begin') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        dotnet sonarscanner begin \
+                          /k:"NexusPay" \
+                          /d:sonar.host.url="$SONAR_HOST_URL" \
+                          /d:sonar.token="$SONAR_AUTH_TOKEN"
+                    '''
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'dotnet restore NexusPay.sln'
+
+                dir('CustomerService') {
+                    sh 'dotnet build --configuration Release --no-restore'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'dotnet test --configuration Release --no-restore'
+            }
+        }
+
+        stage('SonarQube End') {
+    steps {
+        withSonarQubeEnv('SonarQube') {
+            sh '''
+                dotnet sonarscanner end \
+                  /d:sonar.token="$SONAR_AUTH_TOKEN"
+            '''
+        }
+    }
+}
+
+stage('Quality Gate') {
+    steps {
+        timeout(time: 5, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
+    }
+}
+
+
+        stage('Docker Build & Push') {
+    steps {
+        dir('CustomerService') {
+            withCredentials([usernamePassword(
+                credentialsId: 'dockerhub-credentials',
+                usernameVariable: 'DOCKERHUB_USERNAME',
+                passwordVariable: 'DOCKERHUB_TOKEN'
+            )]) {
+                sh '''
+                    echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
+                    docker build \
+                        -t "$DOCKERHUB_USERNAME/nexuspay-customerservice:latest" \
+                        -t "$DOCKERHUB_USERNAME/nexuspay-customerservice:${BUILD_NUMBER}" .
+
+                    docker push "$DOCKERHUB_USERNAME/nexuspay-customerservice:latest"
+                    docker push "$DOCKERHUB_USERNAME/nexuspay-customerservice:${BUILD_NUMBER}"
+
+                    docker logout
+                '''
+            }
+        }
+    }
+}
+    }
+}
