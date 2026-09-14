@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexuspay-customerservice
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: nexuspay-customerservice
+
+  template:
+    metadata:
+      labels:
+        app: nexuspay-customerservice
+
+    spec:
+      containers:
+        - name: customerservice
+          image: sathya123k2/nexuspay-customerservice:1.0
+
+          ports:
+            - containerPort: 8080
+
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: nexuspay-db-connection
+                  key: connectionString
