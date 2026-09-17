@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexuspay-accountservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nexuspay-accountservice
+  template:
+    metadata:
+      labels:
+        app: nexuspay-accountservice
+    spec:
+      containers:
+        - name: accountservice
+          image: sathya123k2/nexuspay-accountservice:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: nexuspay-db-connection
+                  key: connectionString
