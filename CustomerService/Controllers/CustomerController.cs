@@ -1,6 +1,7 @@
 using CustomerService.Models;
 using CustomerService.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CustomerService.Controllers;
 
@@ -14,7 +15,8 @@ public class CustomerController : ControllerBase
     {
         _customerService = customerService;
     }
-
+    
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Customer>>> GetAll()
     {

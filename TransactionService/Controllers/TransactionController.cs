@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TransactionService.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TransactionService.Controllers;
 
@@ -13,7 +14,8 @@ public class TransactionController : ControllerBase
     {
         _transactionService = transactionService;
     }
-
+    
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Transaction>>> GetAll()
     {

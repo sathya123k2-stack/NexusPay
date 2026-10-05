@@ -1,0 +1,152 @@
+Build and manage AWS servers and services so an application can run reliably and handle more users/traffic when needed..??
+
+Design → Decide what AWS resources the application needs.
+EC2
+S3
+IAM
+VPC
+Load Balancer, etc.
+Implement → Actually create and configure those resources.
+Maintain → Monitor them, fix problems, update configurations, security, backups, etc.
+Scalable → Make the infrastructure capable of handling increased traffic/workload.-------------------------------
+
+
+Build, manage, and optimise CI/CD pipelines for seamless application deployments....???
+
+Build → Create the CI/CD pipeline.
+Manage → Monitor it, fix failed builds, update steps/configuration.
+Optimise → Make deployments faster, more reliable, and efficient.
+CI/CD pipeline → An automated sequence such as:
+GitHub → Jenkins → Build → Test → SonarQube → Docker → Deploy----------------------------------------------------
+
+
+
+Automate infrastructure provisioning using Infrastructure as Code (IaC) tools...???
+
+Simple example
+
+Instead of manually going into AWS and creating an EC2 server:
+
+Manual way:
+AWS Console → EC2 → Create instance → Configure → Security → etc.
+
+IaC way:
+Write a Terraform configuration → run Terraform → infrastructure gets created automatically.-----------------------------
+
+
+Breaking it down
+Monitor application performance → Check whether the API is responding properly and quickly.
+System health → Check CPU, memory, errors, logs, database connectivity, etc.
+Infrastructure availability → Check whether servers, containers, databases, and other infrastructure are actually running.--------------------------------------------------------
+
+
+This means:
+
+Package applications into Docker containers and use Kubernetes to manage those containers when running at scale.
+
+Breaking it down
+Docker — Containerisation
+
+Create a Dockerfile
+
+Build a Docker image
+
+Run the application as a container
+
+Manage container networking, ports, etc.
+
+We've definitely done this in NexusPay. ✅
+
+For example, we built:
+
+nexuspay-customerservice
+        ↓
+Docker image
+        ↓
+Docker container
+        ↓
+localhost:8080
+We've also dealt with Docker logs, container conflicts, ports, rebuilding images, etc.
+
+Kubernetes — Orchestration
+
+Kubernetes is used when you have many containers/services and need something to manage them automatically.
+
+For example:
+
+Kubernetes
+│
+├── CustomerService container
+├── AccountService container
+├── TransactionService container
+│
+├── Restart failed containers
+├── Scale containers
+├── Load balance traffic
+└── Manage deployments
+Have we done Kubernetes in NexusPay?
+No — not yet. ❌
+
+We've done the Docker/containerisation part, but we haven't deployed NexusPay using Kubernetes yet.
+
+So for this bullet:
+
+Skill	NexusPay
+Docker	✅ Done
+Containerisation	✅ Done
+Kubernetes	❌ Not yet
+Container orchestration	❌ Not yet
+Once we finish the services, we could add Kubernetes as another stage of the project. That would make this bullet fully backed by your project experience rather than only theoretical knowledge.-------------------------------------------=-----------
+
+
+Manage production deployments
+→ Take a new version of the application and deploy it to the production environment where real users are using it.
+
+Minimal downtime
+→ Make sure users experience little or no interruption during the deployment.--------------------------------------------------------
+
+
+
+Collaborate with software engineering teams to improve deployment efficiency.
+
+This means:
+
+Work together with developers to make the process of building, testing, and deploying applications faster, easier, and more reliable.--------------------------------------------------------------------
+
+Configure logging, monitoring, and alerting systems.
+
+Set up systems that collect application information, monitor what's happening, and notify you when something goes wrong.------------------------------------------------------------------
+implement backup, disaster recovery, and high-availability solutions.
+
+Make sure the application and its data can survive failures and can be restored quickly if something goes wrong.----------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

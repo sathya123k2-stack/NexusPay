@@ -1,5 +1,6 @@
 using AuthenticationService.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AuthenticationService.Controllers;
 
@@ -15,6 +16,7 @@ public class UserController : ControllerBase
         _authenticationService = authenticationService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<User>>> GetAll()
     {
@@ -47,23 +49,13 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
     {
-    var user = await _authenticationService.Login(
+    var response = await _authenticationService.Login(
         request.Username,
         request.Password);
 
-    if (user == null)
+    if (response == null)
         return Unauthorized("Invalid username or password.");
-
-    var response = new LoginResponse
-    {
-        Id = user.Id,
-        CustomerId = user.CustomerId,
-        Username = user.Username,
-        Role = user.Role,
-        Message = "Login successful"
-    };
 
     return Ok(response);
     }
-
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PaymentService.Controllers;
 
@@ -13,7 +14,8 @@ public class PaymentController : ControllerBase
     {
         _paymentService = paymentService;
     }
-
+    
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Payment>>> GetAll()
     {

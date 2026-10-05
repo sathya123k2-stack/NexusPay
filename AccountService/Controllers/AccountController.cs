@@ -1,5 +1,6 @@
 using AccountService.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AccountService.Controllers;
 
@@ -13,7 +14,8 @@ public class AccountController : ControllerBase
     {
         _accountService = accountService;
     }
-
+    
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Account>>> GetAll()
     {

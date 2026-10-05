@@ -23,4 +23,6 @@ COPY --from=build /app/publish .
 
 EXPOSE 8080
 
+USER app
+
 ENTRYPOINT ["dotnet", "CustomerService.dll"]

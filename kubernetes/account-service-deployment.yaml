@@ -11,13 +11,23 @@ spec:
     metadata:
       labels:
         app: nexuspay-accountservice
+        
     spec:
+      automountServiceAccountToken: false
+
       containers:
         - name: accountservice
           image: sathya123k2/nexuspay-accountservice:1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          resources:
+              requests:
+                cpu: "100m"
+                memory: "128Mi"
+              limits:
+               cpu: "500m"
+               memory: "512Mi"
           livenessProbe:
             httpGet:
               path: /health
