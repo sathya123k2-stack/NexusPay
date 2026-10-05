@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService", "PaymentSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService", "AuthenticationService\AuthenticationService.csproj", "{3F9C3C38-F41E-4BB2-A7D5-C1F9CE4705D1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CustomerService", "CustomerService", "{103633A6-1178-41BC-8E05-EF79417B4078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomerService.Tests", "CustomerService\CustomerService.Tests\CustomerService.Tests.csproj", "{956A656C-1B3C-499B-912A-68767757C708}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +46,13 @@ Global
 		{3F9C3C38-F41E-4BB2-A7D5-C1F9CE4705D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F9C3C38-F41E-4BB2-A7D5-C1F9CE4705D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F9C3C38-F41E-4BB2-A7D5-C1F9CE4705D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956A656C-1B3C-499B-912A-68767757C708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956A656C-1B3C-499B-912A-68767757C708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956A656C-1B3C-499B-912A-68767757C708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956A656C-1B3C-499B-912A-68767757C708}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C1B5BFC2-75FE-4CCD-8C32-21BF2FAD592F} = {103633A6-1178-41BC-8E05-EF79417B4078}
+		{956A656C-1B3C-499B-912A-68767757C708} = {103633A6-1178-41BC-8E05-EF79417B4078}
 	EndGlobalSection
 EndGlobal
