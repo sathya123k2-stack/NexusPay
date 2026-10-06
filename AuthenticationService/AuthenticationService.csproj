@@ -23,4 +23,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+  <Compile Remove="AuthenticationService.Tests\**" />
+  <Content Remove="AuthenticationService.Tests\**" />
+  <EmbeddedResource Remove="AuthenticationService.Tests\**" />
+  <None Remove="AuthenticationService.Tests\**" />
+  </ItemGroup>
+
 </Project>

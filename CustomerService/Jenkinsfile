@@ -34,7 +34,13 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'dotnet test --configuration Release --no-restore'
+                sh '''
+                dotnet test --configuration Release --no-restore \
+                                --collect:"XPlat Code Coverage" \
+                --results-directory ./TestResults \
+                -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+              '''
+
             }
         }
 
