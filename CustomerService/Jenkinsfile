@@ -4,10 +4,20 @@ pipeline {
     stages {
 
         stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    steps {
+        deleteDir()
+
+        git branch: 'master',
+            url: 'https://github.com/sathya123k2-stack/NexusPay.git'
+
+        sh '''
+            git status
+            git rev-parse HEAD
+            git ls-files --stage kubernetes/customer-service-deployment.yaml
+            git blame -L 18,40 kubernetes/customer-service-deployment.yaml
+        '''
+    }
+}
 
         stage('SonarQube Begin') {
             steps {
