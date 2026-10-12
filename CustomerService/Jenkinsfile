@@ -11,6 +11,10 @@ pipeline {
             url: 'https://github.com/sathya123k2-stack/NexusPay.git'
 
         sh '''
+
+            rm -f customer-service-deployment.yaml
+            rm -f customer-service-service.yaml
+ 
             git status
             git rev-parse HEAD
             git ls-files --stage kubernetes/customer-service-deployment.yaml
