@@ -6,6 +6,7 @@ public class User
 {
     public int Id { get; set; }
 
+    [Required]
     public int CustomerId { get; set; }
 
     [Required]
