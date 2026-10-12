@@ -1,16 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PaymentService.Models;
 
 public class Payment
 {
+    [JsonRequired]
     public int Id { get; set; }
 
-    [Required]
+    [JsonRequired]
     public int AccountId { get; set; }
 
-    [Required]
+    [JsonRequired]
     [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; set; }
 
@@ -20,7 +22,6 @@ public class Payment
 
     public string PaymentStatus { get; set; } = "Pending";
 
-    [Required]
     public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
 
     public string Description { get; set; } = string.Empty;

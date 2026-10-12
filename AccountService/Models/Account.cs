@@ -1,13 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AccountService.Models;
 
 public class Account
 {
+    [JsonRequired]
     public int Id { get; set; }
 
-    [Required]
+    [JsonRequired]
     public int CustomerId { get; set; }
 
     [Required]
@@ -16,7 +18,7 @@ public class Account
     [Required]
     public string AccountType { get; set; } = "Savings";
 
-    [Required]
+    [JsonRequired]
     [Column(TypeName = "decimal(18,2)")]
     public decimal Balance { get; set; }
 
