@@ -1,6 +1,6 @@
 using AccountService.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AccountService.Controllers;
 
@@ -14,12 +14,13 @@ public class AccountController : ControllerBase
     {
         _accountService = accountService;
     }
-    
+
     [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Account>>> GetAll()
     {
         var accounts = await _accountService.GetAll();
+
         return Ok(accounts);
     }
 
@@ -29,7 +30,9 @@ public class AccountController : ControllerBase
         var account = await _accountService.GetById(id);
 
         if (account == null)
+        {
             return NotFound();
+        }
 
         return Ok(account);
     }

@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PaymentService.Controllers;
 using PaymentService.Data;
 using PaymentService.Models;
 using Xunit;
@@ -15,6 +17,10 @@ public class PaymentServiceTests
 
         return new ApplicationDbContext(options);
     }
+
+    // =========================
+    // SERVICE TESTS
+    // =========================
 
     [Fact]
     public async Task GetAll_ReturnsAllPayments()
@@ -98,5 +104,120 @@ public class PaymentServiceTests
 
         Assert.NotEqual(0, result.Id);
         Assert.Equal(1, await context.Payments.CountAsync());
+    }
+
+    // =========================
+    // CONTROLLER TESTS
+    // =========================
+
+    [Fact]
+    public async Task Controller_GetAll_ReturnsOkWithPayments()
+    {
+        await using var context = CreateContext();
+
+        context.Payments.Add(new Payment
+        {
+            AccountId = 1,
+            Amount = 1500,
+            Currency = "INR",
+            PaymentMethod = "UPI",
+            PaymentStatus = "Completed",
+            Description = "Test payment"
+        });
+
+        await context.SaveChangesAsync();
+
+        var service = new PaymentService.Services.PaymentService(context);
+        var controller = new PaymentController(service);
+
+        var result = await controller.GetAll();
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var payments = Assert.IsType<List<Payment>>(okResult.Value);
+
+        Assert.Single(payments);
+        Assert.Equal(1500, payments[0].Amount);
+        Assert.Equal("Completed", payments[0].PaymentStatus);
+    }
+
+    [Fact]
+    public async Task Controller_GetById_ReturnsOk_WhenPaymentExists()
+    {
+        await using var context = CreateContext();
+
+        var payment = new Payment
+        {
+            AccountId = 1,
+            Amount = 1500,
+            Currency = "INR",
+            PaymentMethod = "UPI",
+            PaymentStatus = "Completed",
+            Description = "Test payment"
+        };
+
+        context.Payments.Add(payment);
+        await context.SaveChangesAsync();
+
+        var service = new PaymentService.Services.PaymentService(context);
+        var controller = new PaymentController(service);
+
+        var result = await controller.GetById(payment.Id);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedPayment = Assert.IsType<Payment>(okResult.Value);
+
+        Assert.Equal(payment.Id, returnedPayment.Id);
+        Assert.Equal(1500, returnedPayment.Amount);
+        Assert.Equal("Completed", returnedPayment.PaymentStatus);
+    }
+
+    [Fact]
+    public async Task Controller_GetById_ReturnsNotFound_WhenPaymentDoesNotExist()
+    {
+        await using var context = CreateContext();
+
+        var service = new PaymentService.Services.PaymentService(context);
+        var controller = new PaymentController(service);
+
+        var result = await controller.GetById(999);
+
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task Controller_Add_ReturnsCreatedAtAction_WhenPaymentIsAdded()
+    {
+        await using var context = CreateContext();
+
+        var service = new PaymentService.Services.PaymentService(context);
+        var controller = new PaymentController(service);
+
+        var payment = new Payment
+        {
+            AccountId = 1,
+            Amount = 3000,
+            Currency = "INR",
+            PaymentMethod = "UPI",
+            PaymentStatus = "Pending",
+            Description = "New payment"
+        };
+
+        var result = await controller.Add(payment);
+
+        var createdResult =
+            Assert.IsType<CreatedAtActionResult>(result.Result);
+
+        Assert.Equal(
+            nameof(PaymentController.GetById),
+            createdResult.ActionName);
+
+        Assert.NotNull(createdResult.Value);
+
+        var createdPayment =
+            Assert.IsType<Payment>(createdResult.Value);
+
+        Assert.NotEqual(0, createdPayment.Id);
+        Assert.Equal(3000, createdPayment.Amount);
+        Assert.Equal("Pending", createdPayment.PaymentStatus);
     }
 }
