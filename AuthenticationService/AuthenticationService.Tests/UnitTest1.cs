@@ -24,7 +24,7 @@ public class AuthenticationServiceTests
     {
         var settings = new Dictionary<string, string?>
         {
-            ["Jwt:Key"] = "Test-Key-For-Unit-Testing-Only",
+            ["Jwt:Key"] = "Test-Key-For-Unit-Testing-Only-32-Bytes!",
             ["Jwt:Issuer"] = "NexusPay",
             ["Jwt:Audience"] = "NexusPayUsers"
         };
@@ -226,4 +226,118 @@ public class AuthenticationServiceTests
             "Invalid username or password.",
             unauthorizedResult.Value);
     }
+       [Fact]
+    public async Task Login_ReturnsNull_WhenUserDoesNotExist()
+    {
+        await using var context = CreateContext();
+
+        var service = new AuthenticationService.Services.AuthenticationService(
+            context,
+            CreateConfiguration());
+
+        var result = await service.Login(
+            "missinguser",
+            "Password123");
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task Login_ReturnsNull_WhenPasswordIsIncorrect()
+    {
+        await using var context = CreateContext();
+
+        var user = new User
+        {
+            CustomerId = 1,
+            Username = "testuser",
+            Role = "Customer"
+        };
+
+        var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
+
+        user.PasswordHash = hasher.HashPassword(
+            user,
+            "CorrectPassword");
+
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+
+        var service = new AuthenticationService.Services.AuthenticationService(
+            context,
+            CreateConfiguration());
+
+        var result = await service.Login(
+            "testuser",
+            "WrongPassword");
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task Login_ReturnsToken_WhenCredentialsAreValid()
+    {
+        await using var context = CreateContext();
+
+        var user = new User
+        {
+            CustomerId = 1,
+            Username = "testuser",
+            Role = "Customer"
+        };
+
+        var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
+
+        user.PasswordHash = hasher.HashPassword(
+            user,
+            "CorrectPassword");
+
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+
+        var service = new AuthenticationService.Services.AuthenticationService(
+            context,
+            CreateConfiguration());
+
+        var result = await service.Login(
+            "testuser",
+            "CorrectPassword");
+
+        Assert.NotNull(result);
+        Assert.Equal(user.Id, result.Id);
+        Assert.Equal(user.CustomerId, result.CustomerId);
+        Assert.Equal("testuser", result.Username);
+        Assert.Equal("Customer", result.Role);
+        Assert.Equal("Login successful", result.Message);
+        Assert.False(string.IsNullOrWhiteSpace(result.Token));
+    }
+
+    [Fact]
+    public async Task Add_HashesPassword_BeforeSaving()
+    {
+        await using var context = CreateContext();
+
+        var service = new AuthenticationService.Services.AuthenticationService(
+            context,
+            CreateConfiguration());
+
+        var user = new User
+        {
+            CustomerId = 1,
+            Username = "newuser",
+            PasswordHash = "PlainTextPassword",
+            Role = "Customer"
+        };
+
+        var result = await service.Add(user);
+
+        Assert.NotEqual("PlainTextPassword", result.PasswordHash);
+        Assert.NotEqual(0, result.Id);
+
+        var savedUser = await context.Users.FirstAsync();
+
+        Assert.NotEqual("PlainTextPassword", savedUser.PasswordHash);
+    
+ }
+
 }
