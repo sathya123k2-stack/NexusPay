@@ -24,14 +24,17 @@ pipeline {
 }
 
         stage('SonarQube Begin') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        dotnet sonarscanner begin \
-                          /k:"NexusPay" \
-                          /d:sonar.host.url="$SONAR_HOST_URL" \
-                          /d:sonar.token="$SONAR_AUTH_TOKEN"
-                    '''
+    steps {
+        withSonarQubeEnv('SonarQube') {
+            sh '''
+                dotnet sonarscanner begin \
+                  /k:"NexusPay" \
+                  /d:sonar.host.url="$SONAR_HOST_URL" \
+                  /d:sonar.token="$SONAR_AUTH_TOKEN" \
+                  /d:sonar.cs.opencover.reportsPaths="TestResults/**/coverage.opencover.xml" \
+                  /d:sonar.coverage.exclusions="**/Migrations/**,**/Program.cs"
+            '''
+
                 }
             }
         }
